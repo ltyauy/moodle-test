@@ -43,7 +43,7 @@ if (function_exists('opcache_reset')) {
 }
 
 $help =
-"Advanced command line Moodle database installer.
+        "Advanced command line Moodle database installer.
 Please note you must execute this script with the same uid as apache.
 
 Site defaults may be changed via local/defaults.php.
@@ -64,11 +64,11 @@ Example:
 ";
 
 // Check that PHP is of a sufficient version as soon as possible.
-require_once(__DIR__.'/../../lib/phpminimumversionlib.php');
+require_once(__DIR__ . '/../../lib/phpminimumversionlib.php');
 moodle_require_minimum_php_version();
 
 // Nothing to do if config.php does not exist
-$configfile = __DIR__.'/../../config.php';
+$configfile = __DIR__ . '/../../config.php';
 if (!file_exists($configfile)) {
     fwrite(STDERR, 'config.php does not exist, can not continue'); // do not localize
     fwrite(STDERR, "\n");
@@ -78,10 +78,10 @@ if (!file_exists($configfile)) {
 // Include necessary libs
 require($configfile);
 
-require_once($CFG->libdir.'/clilib.php');
-require_once($CFG->libdir.'/installlib.php');
-require_once($CFG->libdir.'/adminlib.php');
-require_once($CFG->libdir.'/componentlib.class.php');
+require_once($CFG->libdir . '/clilib.php');
+require_once($CFG->libdir . '/installlib.php');
+require_once($CFG->libdir . '/adminlib.php');
+require_once($CFG->libdir . '/componentlib.class.php');
 
 $CFG->early_install_lang = true;
 get_string_manager(true);
@@ -90,20 +90,20 @@ raise_memory_limit(MEMORY_EXTRA);
 
 // now get cli options
 list($options, $unrecognized) = cli_get_params(
-    array(
-        'lang'              => 'en',
-        'adminuser'         => 'admin',
-        'adminpass'         => '',
-        'adminemail'        => '',
-        'fullname'          => '',
-        'shortname'         => '',
-        'summary'           => '',
-        'agree-license'     => false,
-        'help'              => false
-    ),
-    array(
-        'h' => 'help'
-    )
+        array(
+                'lang' => 'en',
+                'adminuser' => 'admin',
+                'adminpass' => '',
+                'adminemail' => '',
+                'fullname' => '',
+                'shortname' => '',
+                'summary' => '',
+                'agree-license' => false,
+                'help' => false
+        ),
+        array(
+                'h' => 'help'
+        )
 );
 
 if ($unrecognized) {
@@ -118,7 +118,7 @@ if ($options['help']) {
 }
 
 // Make sure no tables are installed yet.
-if ($DB->get_tables() ) {
+if ($DB->get_tables()) {
     cli_error(get_string('clitablesexist', 'install'));
 }
 
@@ -137,7 +137,7 @@ if (!empty($options['adminemail']) && !validate_email($options['adminemail'])) {
 }
 
 $options['lang'] = clean_param($options['lang'], PARAM_SAFEDIR);
-if (!file_exists($CFG->dirroot.'/install/lang/'.$options['lang'])) {
+if (!file_exists($CFG->dirroot . '/install/lang/' . $options['lang'])) {
     $options['lang'] = 'en';
 }
 $CFG->lang = $options['lang'];
@@ -149,9 +149,9 @@ if ($CFG->lang !== 'en') {
     $results = $installer->run();
     foreach ($results as $langcode => $langstatus) {
         if ($langstatus === lang_installer::RESULT_DOWNLOADERROR) {
-            $a       = new stdClass();
-            $a->url  = $installer->lang_pack_url($langcode);
-            $a->dest = $CFG->dataroot.'/lang';
+            $a = new stdClass();
+            $a->url = $installer->lang_pack_url($langcode);
+            $a->dest = $CFG->dataroot . '/lang';
             cli_problem(get_string('remotedownloaderror', 'error', $a));
         }
     }
@@ -189,8 +189,8 @@ install_cli_database($options, true);
 // have been purged for the last time.
 // This will build a cached version of the current theme for the user
 // to immediately start browsing the site.
-require_once($CFG->libdir.'/upgradelib.php');
+require_once($CFG->libdir . '/upgradelib.php');
 upgrade_themes();
 
-echo get_string('cliinstallfinished', 'install')."\n";
+echo get_string('cliinstallfinished', 'install') . "\n";
 exit(0); // 0 means success
